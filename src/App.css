@@ -1,0 +1,27 @@
+/* src/App.css or a separate CSS file */
+.pagination {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  justify-content: center;
+  margin: 1rem 0;
+}
+
+.pagination li {
+  margin: 0 0.25rem;
+}
+
+.pagination li a {
+  padding: 0.5rem 1rem;
+  border: 1px solid #007bff;
+  color: #007bff;
+  cursor: pointer;
+  text-decoration: none;
+  border-radius: 0.25rem;
+}
+
+.pagination li.active a {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
