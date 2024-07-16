@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { CartContext } from '../context/CartContext';
 
 const Checkout = () => {
-  const { cartItems = [], totalPrice } = useContext(CartContext);
+  const { cartItems = [], totalPrice, clearCart } = useContext(CartContext);
 
   if (!cartItems.length) {
     return <div>Your cart is empty</div>;
@@ -31,6 +31,12 @@ const Checkout = () => {
       </table>
       <div className="mt-4">
         <h2 className="text-xl font-bold">Total: ${totalPrice.toFixed(2)}</h2>
+        <button
+          onClick={clearCart}
+          className="mt-2 bg-red-500 text-white px-4 py-2 rounded"
+        >
+          Clear Cart
+        </button>
       </div>
     </div>
   );

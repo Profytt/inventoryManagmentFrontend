@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { fetchProducts } from '../API';
 import { Link } from 'react-router-dom';
+import { CartContext } from '../context/CartContext';
 
 const AllProducts = () => {
   const [products, setProducts] = useState([]);
@@ -8,6 +9,7 @@ const AllProducts = () => {
   const [quantity, setQuantity] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 25;
+  const { addToCart } = useContext(CartContext);
 
   useEffect(() => {
     const getProducts = async () => {
@@ -24,11 +26,18 @@ const AllProducts = () => {
   };
 
   const handleQuantityChange = (id, value) => {
-    setQuantity((prev) => ({ ...prev, [id]: value }));
+    setQuantity((prev) => ({ ...prev, [id]: parseInt(value, 10) }));
   };
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
+  };
+
+  const handleFinalizeOrder = () => {
+    selectedProducts.forEach((productId) => {
+      const product = products.find((prod) => prod.id === productId);
+      addToCart({ ...product, quantity: quantity[productId] || 1 });
+    });
   };
 
   const indexOfLastProduct = currentPage * productsPerPage;
@@ -69,6 +78,7 @@ const AllProducts = () => {
                   value={quantity[product.id] || 1}
                   onChange={(e) => handleQuantityChange(product.id, e.target.value)}
                   className="border rounded py-1 px-2"
+                  min="1"
                 />
               </td>
             </tr>
@@ -88,7 +98,7 @@ const AllProducts = () => {
       </div>
       {selectedProducts.length > 0 && (
         <Link to="/checkout">
-          <button className="bg-green-500 text-white px-4 py-2 mt-4 rounded">
+          <button onClick={handleFinalizeOrder} className="bg-green-500 text-white px-4 py-2 mt-4 rounded">
             Finalize Order
           </button>
         </Link>
