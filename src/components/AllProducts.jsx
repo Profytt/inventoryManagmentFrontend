@@ -8,13 +8,27 @@ const AllProducts = () => {
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [quantity, setQuantity] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const productsPerPage = 25;
   const { addToCart } = useContext(CartContext);
 
   useEffect(() => {
     const getProducts = async () => {
-      const data = await fetchProducts();
-      setProducts(data);
+      try {
+        setLoading(true);
+        setError(null); // Reset error state before fetching
+        const data = await fetchProducts();
+        if (data && Array.isArray(data)) {
+          setProducts(data);
+        } else {
+          throw new Error('Invalid data format');
+        }
+      } catch (err) {
+        setError('Failed to fetch products. Please try again.');
+      } finally {
+        setLoading(false);
+      }
     };
     getProducts();
   }, []);
@@ -43,6 +57,14 @@ const AllProducts = () => {
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
   const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   return (
     <div className="p-4">
